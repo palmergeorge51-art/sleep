@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Baby wake window calculator</title><style>
+:root{--bg:#F6F3EC;--ink:#1e2b27;--mute:#5d6a65;--green:#176B5A;--line:#e3ddd0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:28px 18px 56px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0 0 10px}
+h1{font-size:31px}h2{font-size:23px}h3{font-size:19px}
+p{margin:0 0 12px}.sub{color:var(--mute)}.fine{font-size:13px;color:var(--mute)}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}
+label{display:block;font-weight:600;margin:14px 0 6px}
+select,input{width:100%;font:inherit;padding:13px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+.btn{display:inline-block;border:0;border-radius:999px;padding:13px 22px;font:600 16px system-ui,sans-serif;background:var(--green);color:#fff;cursor:pointer;text-decoration:none;text-align:center}
+.btn.full{width:100%;margin-top:18px}.btn.alt{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+:focus-visible{outline:3px solid #d98027;outline-offset:2px}
+.stat{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border:0}.stat span{color:var(--mute)}.stat b{font:600 20px Georgia,serif;text-align:right}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:12px}.bar i{display:block;height:100%;background:var(--green)}
+.opt{display:block;width:100%;text-align:left;font:inherit;padding:15px 16px;margin:10px 0;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;color:var(--ink)}
+.opt:hover{border-color:var(--green)}
+.tips{padding-left:20px;margin:8px 0}.tips li{margin:6px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+.price s{opacity:.6}.price b{font:600 28px Georgia,serif}
+.bun{background:linear-gradient(160deg,#145a4c,#1f8573);color:#fff;border:0}
+.bun .btn{background:#fff;color:#145a4c}
+.tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-bottom:10px}
+.note{font-size:14px;margin:14px 0 0;text-align:center;opacity:.92}
+.also{text-align:center;margin-top:26px;color:var(--mute)}.also a{color:var(--green);font-weight:600}
+</style></head><body><main><h1>Baby wake window calculator</h1><p class="sub">Pick your baby’s age and wake-up time to see how long they can stay awake between naps.</p><div class="card"><label for="age">Baby’s age</label><select id="age"></select><label for="wake">Wake-up time</label><input id="wake" type="time" value="07:00"><button class="btn full" id="go">Show my schedule</button></div><div id="out" hidden></div></main><script>
+const L={sleep:"https://momwins.systeme.io/sleep",potty:"https://momwins.systeme.io/potty",tantrums:"https://momwins.systeme.io/tantrums",bundle:"https://momwins.systeme.io/bundle"};
+const G={sleep:["Baby Sleep Fix","Safe, gentle sleep guide for ages 0 to 2 with a 14-night plan and printable toolkit.","#b85c3e"],potty:["Potty Train Your Child","Calm 3-day starter plan plus printables, scripts and caregiver tools.","#176B5A"],tantrums:["Tantrum &amp; Meltdown Fix","The CALM Method for tantrums and meltdowns, plus a printable toolkit.","#d98027"]};
+const T={sleep:["Baby wake window calculator","wake-window-calculator.html"],potty:["Potty readiness quiz","potty-readiness-quiz.html"],tantrums:["Tantrum type quiz","tantrum-type-quiz.html"]};
+function offer(k,lead){const g=G[k];return `<section><h2>${lead}</h2><div class="card" style="border-color:${g[2]}"><h3>${g[0]}</h3><p class="sub">${g[1]}</p><div class="row"><span class="price"><s>$47</s> <b>$17</b></span><a class="btn" style="background:${g[2]}" target="_top" href="${L[k]}">Get It</a></div></div><div class="card bun"><span class="tag">Best value</span><h3>Complete Bundle</h3><p>All 3 guides and toolkits: baby sleep, potty training, tantrums and meltdowns.</p><div class="row"><span class="price"><s>$141</s> <b>$34</b></span><a class="btn" target="_top" href="${L.bundle}">Get the Bundle</a></div><p class="note">Get the 3 for the price of 2. Get 1 free.</p></div></section>`}
+function also(k){return '<p class="also">Also try: '+Object.keys(T).filter(x=>x!==k).map(x=>`<a target="_top" href="${T[x][1]}">${T[x][0]}</a>`).join(" or ")+"</p>"}
+const $=id=>document.getElementById(id);
+
+const A=[["0–4 weeks",35,60,"5–8",0,0,"14–17"],["1 month",45,75,"4–6",0,0,"14–17"],["2 months",60,90,"4–5",0,0,"14–17"],["3 months",75,120,"4",0,0,"14–17"],["4 months",90,135,"3–4",4,60,"12–16"],["5 months",105,150,"3",3,75,"12–16"],["6 months",120,165,"3",3,75,"12–15"],["7 months",120,180,"2–3",3,60,"12–15"],["8 months",150,180,"2–3",2,90,"12–15"],["9 months",150,180,"2",2,90,"12–15"],["10 months",150,195,"2",2,90,"12–15"],["11 months",165,210,"2",2,90,"12–15"],["12 months",180,240,"2",2,75,"11–14"],["13–14 months",180,240,"1–2",2,90,"11–14"],["15–18 months",270,330,"1–2",1,120,"11–14"],["19–24 months",300,360,"1",1,120,"11–14"]];
+const f=m=>{m=Math.round(m)%1440;let h=Math.floor(m/60),n=m%60,p=h<12?"AM":"PM";h=h%12||12;return h+":"+String(n).padStart(2,"0")+" "+p};
+const rg=(l,h)=>h<=120?`${l}–${h} min`:`${+(l/60).toFixed(2)}–${+(h/60).toFixed(2)} hours`;
+const row=(a,b)=>`<div class="stat"><span>${a}</span><b style="font-size:17px">${b}</b></div>`;
+const s=$("age");A.forEach((a,i)=>s.add(new Option(a[0],i)));s.value=6;
+$("go").onclick=()=>{const a=A[s.value],[lo,hi,nt,n,nl,sl]=a.slice(1),t=($("wake").value||"07:00").split(":");let c=+t[0]*60+ +t[1];
+let h=`<div class="card"><h2>${a[0]}</h2><div class="stat"><span>Awake between naps</span><b>${rg(lo,hi)}</b></div><div class="stat"><span>Naps per day</span><b>${nt}</b></div><div class="stat"><span>Total sleep in 24 hours</span><b>${sl} hours</b></div></div>`;
+if(n){h+=`<div class="card"><h3>A sample day</h3>`+row("Wake up",f(c));for(let i=0;i<=n;i++){c+=Math.round((lo+(hi-lo)*.6*i/n)/5)*5;if(i<n){h+=row("Nap "+(i+1),f(c)+" – "+f(c+nl));c+=nl}else h+=row("Bedtime",f(c))}h+=`<p class="fine">Shift the times to fit your baby. Naps vary in length, and a shorter nap means an earlier next one.</p></div>`}
+else h+=`<div class="card"><p>Under 4 months, sleep doesn’t follow a fixed schedule yet. Use the awake time above as a guide and watch for tired signs like yawning, staring and fussing.</p></div>`;
+h+=`<p class="fine">This is a general guide. Every baby is different. Talk to your pediatrician about any sleep or growth concerns.</p>`+offer("sleep","Want the full 14-night plan?")+also("sleep");
+const o=$("out");o.innerHTML=h;o.hidden=false;o.scrollIntoView()};
+</script></body></html>
